@@ -11,12 +11,15 @@ import java.util.stream.Stream;
 public class App {
     public static void main(String[] args) throws Exception {
         // Initialize matrices
-        String filename = "matrices/matrix1.txt";
-        int[][][] matrices = generateMatrixFromFile(filename);
-        int[][] a = matrices[0];
-        int[][] b = matrices[1];
-        int[][] c = classicalMult(a, b);
-        printResults(a, b, c);
+        for(int i = 1; i <= 10; i++) {
+            System.out.printf("----- TEST %d -----\n", i);
+            String filename = "matrices/matrix" + i + ".txt";
+            int[][][] matrices = generateMatrixFromFile(filename);
+            int[][] a = matrices[0];
+            int[][] b = matrices[1];
+            int[][] c = classicalMult(a, b);
+            printResults(a, b, c);
+        }
     }
 
     /**
