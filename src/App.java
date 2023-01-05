@@ -15,6 +15,8 @@ public class App {
         int[][][] matrices = generateMatrixFromFile(filename);
         int[][] a = matrices[0];
         int[][] b = matrices[1];
+        int[][] c = classicalMult(a, b);
+        printResults(a, b, c);
     }
 
     /**
@@ -54,6 +56,27 @@ public class App {
         }
         sc.close();
         return new int[][][] {a, b};
+    }
+
+    /**
+     * Multiplies two matrices using classical matrix multiplication.
+     * 
+     * @param a   The first matrix to multiply
+     * @param b   The first matrix to multiply
+     * @return    int[][] the resultant matrix
+     */
+    public static int[][] classicalMult(int[][] a, int[][] b) {
+        int n = a.length;
+        int c[][] = new int[n][n];
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < n; j++) {
+                c[i][j] = 0;
+                for(int k = 0; k < n; k++) {
+                    c[i][j] += a[i][k] * b[k][j];
+                }
+            }
+        }
+        return c;
     }
 
     /**
