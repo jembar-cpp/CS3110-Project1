@@ -17,7 +17,7 @@ public class App {
             int[][][] matrices = generateMatrixFromFile(filename);
             int[][] a = matrices[0];
             int[][] b = matrices[1];
-            int[][] c = classicalMult(a, b);
+            int[][] c = divAndConquerMult(a, b);
             printResults(a, b, c);
         }
     }
@@ -83,6 +83,81 @@ public class App {
     }
 
     /**
+     * Multiplies two matrices using divide and conquer algorithm.
+     * 
+     * @param a   The first matrix to multiply
+     * @param b   The first matrix to multiply
+     * @return    int[][] the resultant matrix
+     */
+    public static int[][] divAndConquerMult(int[][] a, int[][] b) {
+        int n = a.length;
+        int c[][] = new int[n][n];
+        if(n == 1) {
+            c[0][0] = a[0][0] * b[0][0];
+        }
+        else {
+            // Split the matrices into four sub-matrices
+            int half_n = n/2;
+            int a11[][] = new int[half_n][half_n];
+            int a12[][] = new int[half_n][half_n];
+            int a21[][] = new int[half_n][half_n];
+            int a22[][] = new int[half_n][half_n];
+            int b11[][] = new int[half_n][half_n];
+            int b12[][] = new int[half_n][half_n];
+            int b21[][] = new int[half_n][half_n];
+            int b22[][] = new int[half_n][half_n];
+            int c11[][] = new int[half_n][half_n];
+            int c12[][] = new int[half_n][half_n];
+            int c21[][] = new int[half_n][half_n];
+            int c22[][] = new int[half_n][half_n];
+
+            // Initialize a and b
+            for(int i = 0; i < n; i++) {
+                for(int j = 0; j < n; j++) {
+                    if(i < half_n) {
+                        if(j < half_n) {
+                            a11[i][j] = a[i][j];
+                            b11[i][j] = b[i][j];
+                        }
+                        else {
+                            a12[i][j-half_n] = a[i][j];
+                            b12[i][j-half_n] = b[i][j];
+                        }
+                    }
+                    else {
+                        if(j < half_n) {
+                            a21[i-half_n][j] = a[i][j];
+                            b21[i-half_n][j] = b[i][j];
+                        }
+                        else {
+                            a22[i-half_n][j-half_n] = a[i][j];
+                            b22[i-half_n][j-half_n] = b[i][j];
+                        }
+                    }
+                }
+            }
+            
+            // Recursive calls for C
+            c11 = addMatrices(divAndConquerMult(a11, b11), divAndConquerMult(a12, b21));
+            c12 = addMatrices(divAndConquerMult(a11, b12), divAndConquerMult(a12, b22));
+            c21 = addMatrices(divAndConquerMult(a21, b11), divAndConquerMult(a22, b21));
+            c22 = addMatrices(divAndConquerMult(a21, b12), divAndConquerMult(a22, b22));
+
+            // Reconstruct C
+            for(int i = 0; i < half_n; i++) {
+                for(int j = 0; j < half_n; j++) {
+                    c[i][j] = c11[i][j];
+                    c[i][j + half_n] = c12[i][j];
+                    c[i + half_n][j] = c21[i][j];
+                    c[i + half_n][j + half_n] = c22[i][j];
+                }
+            }
+        }
+
+        return c;
+    }
+
+    /**
      * Prints a matrix in human-readable format
      * @param matrix int[][]   The matrix to print
      */
@@ -109,5 +184,17 @@ public class App {
         printMatrix(b);
         System.out.println("Resultant matrix C:");
         printMatrix(c);
+    }
+
+    // Helper function to add matrices since Java doesn't have a built-in function...
+    public static int[][] addMatrices(int[][] a, int[][] b) {
+        int n = a.length;
+        int c[][] = new int[n][n];
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < n; j++) {
+                c[i][j] = a[i][j] + b[i][j];
+            }
+        }
+        return c;
     }
 }
