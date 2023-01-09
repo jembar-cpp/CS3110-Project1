@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 
 public class App {
     public static void main(String[] args) throws Exception {
-        for(int n = 2; /*n <= 64*/; n*=2) {
+        for(int n = 2; n <= 1024; n*=2) {
             System.out.printf("----- Matrix size: %d -----\n", n);
             String filename = "matrices/matrix_size" + n + ".txt";
             generateMatrixFile(n);
@@ -22,7 +22,7 @@ public class App {
             int[][] a = matrices[0];
             int[][] b = matrices[1];
 
-            System.out.println("Using: Classical matrix multiplication");
+            System.out.println("Using: Strassen's algorithm");
             
             float times[] = new float[12];
 
@@ -30,7 +30,7 @@ public class App {
             for(int j = 1; j <= 12; j++) {
                 // Time the multiplication
                 long start = System.nanoTime();
-                int[][] c = classicalMult(a, b);
+                int[][] c = strassenMult(a, b);
                 long end = System.nanoTime();
                 long time = (end-start);
                 float time_ms = (float) time / 1000000;
@@ -50,7 +50,7 @@ public class App {
 
             // Write results to file
             PrintWriter pw = new PrintWriter(new FileOutputStream(
-                new File("results/classicalMult.txt"),
+                new File("results/strassenMult.txt"),
                 true));
             pw.printf("Size %d: Average time %.5f ms.\n", n, avg_time);
             pw.close();
