@@ -33,7 +33,7 @@ public class App {
                 int[][] c = classicalMult(a, b);
                 long end = System.nanoTime();
                 long time = (end-start);
-                float time_ms = (float) time / 100000;
+                float time_ms = (float) time / 1000000;
                 // printResults(a, b, c); /* For debugging */
                 System.out.printf("Test %d: %.5f ms.\n", j, time_ms);
                 times[j-1] = time_ms;
