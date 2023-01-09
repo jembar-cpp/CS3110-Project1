@@ -5,20 +5,55 @@
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
 public class App {
     public static void main(String[] args) throws Exception {
-        // Initialize matrices
-        for(int i = 1; i <= 10; i++) {
-            System.out.printf("----- TEST %d -----\n", i);
-            String filename = "matrices/matrix" + i + ".txt";
+        for(int n = 2; /*n <= 64*/; n*=2) {
+            System.out.printf("----- Matrix size: %d -----\n", n);
+            String filename = "matrices/matrix_size" + n + ".txt";
+            generateMatrixFile(n);
             int[][][] matrices = generateMatrixFromFile(filename);
             int[][] a = matrices[0];
             int[][] b = matrices[1];
-            int[][] c = strassenMult(a, b);
-            printResults(a, b, c);
+
+            System.out.println("Using: Classical matrix multiplication");
+            
+            float times[] = new float[12];
+
+            // Run 12 tests per matrix
+            for(int j = 1; j <= 12; j++) {
+                // Time the multiplication
+                long start = System.nanoTime();
+                int[][] c = classicalMult(a, b);
+                long end = System.nanoTime();
+                long time = (end-start);
+                float time_ms = (float) time / 100000;
+                // printResults(a, b, c); /* For debugging */
+                System.out.printf("Test %d: %.5f ms.\n", j, time_ms);
+                times[j-1] = time_ms;
+            }
+
+            // Get the average time and cut the smallest and largest values
+            Arrays.sort(times);
+            float avg_time = 0;
+            for(int j = 1; j <= 10; j++) {
+                avg_time += times[j];
+            }
+            avg_time /= 10;
+            System.out.printf("Average time: %.5f ms.\n", avg_time);
+
+            // Write results to file
+            PrintWriter pw = new PrintWriter(new FileOutputStream(
+                new File("results/classicalMult.txt"),
+                true));
+            pw.printf("Size %d: Average time %.5f ms.\n", n, avg_time);
+            pw.close();
         }
     }
 
@@ -296,5 +331,30 @@ public class App {
             }
         }
         return c;
+    }
+
+    /**
+     * Generates a file for a random matrix of a specified size.
+     * The file should not be cleared afterwards, so that subsequent tests can use the same matrix.
+     * Each element in the matrix is an integer from -100 (inclusive) to 100 (non-inclusive).
+     * Files are named as matrix_size[n].txt, a matrix of size 64 would be named matrix_size64.txt
+     * 
+     * @param n int   The size of the matrix
+     */
+    public static void generateMatrixFile(int n) throws IOException {
+        String filename = "matrices/matrix_size"+n+".txt";
+        if(new File(filename).isFile()) {
+            // File already exists
+            return;
+        }
+        PrintWriter pw = new PrintWriter(filename, "UTF-8");
+        pw.println(n);
+        for(int i = 0; i < n*2; i++) {
+            for(int j = 0; j < n; j++) {
+                int randInt = (int) (Math.random() * 200) - 100;
+                pw.printf("%d"+(j==n-1 ? ((i == n*2 - 1) ? "" : "\n") : " "), randInt); // Nobody will read this code anyways
+            }
+        }
+        pw.close();
     }
 }
