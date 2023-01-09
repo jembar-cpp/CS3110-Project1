@@ -1,0 +1,10 @@
+Size 2: Average time 0.01840 ms.
+Size 4: Average time 0.03010 ms.
+Size 8: Average time 0.12450 ms.
+Size 16: Average time 0.79180 ms.
+Size 32: Average time 0.69880 ms.
+Size 64: Average time 2.14530 ms.
+Size 128: Average time 18.94150 ms.
+Size 256: Average time 158.04550 ms.
+Size 512: Average time 1411.49292 ms.
+Size 1024: Average time 11885.65723 ms.
